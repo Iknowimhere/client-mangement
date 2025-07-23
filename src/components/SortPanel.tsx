@@ -85,7 +85,7 @@ export const SortPanel = ({
   };
 
   return (
-    <div className='bg-white rounded-lg border border-gray-200 shadow-lg p-4 w-80'>
+    <div className='bg-white rounded-lg border border-gray-200 shadow-lg p-4 w-[800px]'>
       <div className='flex items-center justify-between mb-4'>
         <h3 className='font-semibold'>Sort By</h3>
         {onClose && (
@@ -100,161 +100,170 @@ export const SortPanel = ({
         )}
       </div>
 
-      {/* Selected Sort Criteria Section */}
-      {sortCriteria.length > 0 && (
-        <>
-          <div className='mb-4'>
-            <h4 className='text-sm font-medium text-gray-700 mb-2'>
-              Selected Sorts
-            </h4>
-            <div className='space-y-2'>
-              {sortCriteria.map((criteria) => (
-                <SortItem
-                  key={criteria.id}
-                  criteria={criteria}
-                  onRemove={removeSortCriteria}
-                  onToggleDirection={toggleDirection}
-                />
-              ))}
-            </div>
-          </div>
+      {/* Two Column Layout */}
+      <div className='flex gap-6'>
+        {/* Left Column: Selected Sort Criteria */}
+        <div className='flex-1'>
+          <h4 className='text-sm font-medium text-gray-700 mb-2'>
+            Selected Sorts
+          </h4>
+          {sortCriteria.length > 0 ? (
+            <>
+              <div className='space-y-2 mb-4'>
+                {sortCriteria.map((criteria) => (
+                  <SortItem
+                    key={criteria.id}
+                    criteria={criteria}
+                    onRemove={removeSortCriteria}
+                    onToggleDirection={toggleDirection}
+                  />
+                ))}
+              </div>
 
-          {/* Drop Zone for Removing Items */}
-          <div
-            ref={setNodeRef}
-            className={`mb-4 p-3 border-2 border-dashed rounded-lg text-center transition-colors ${
-              isOver
-                ? 'bg-red-100 border-red-400 text-red-700'
-                : 'bg-gray-50 border-gray-300 hover:bg-red-50 hover:border-red-300'
-            }`}
-          >
-            <div
-              className={`flex items-center justify-center gap-2 ${
-                isOver ? 'text-red-700' : 'text-gray-500 hover:text-red-500'
-              }`}
-            >
-              <Trash2 className='h-4 w-4' />
-              <span className='text-sm'>
-                {isOver ? 'Drop to remove' : 'Drag here to remove sort'}
-              </span>
-            </div>
-          </div>
-
-          {/* Divider Line */}
-          <hr className='border-gray-200 mb-4' />
-        </>
-      )}
-
-      {/* Available Options Section */}
-      <div className='mb-4'>
-        <h4 className='text-sm font-medium text-gray-700 mb-2'>
-          Available Sort Options
-        </h4>
-        <div className='space-y-1'>
-          {sortFields.map((sortField) => {
-            const selectedCriteria = sortCriteria.find(
-              (criteria) => criteria.field === sortField.field
-            );
-            const isSelected = !!selectedCriteria;
-
-            return (
+              {/* Drop Zone for Removing Items */}
               <div
-                key={sortField.field}
-                className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                  isSelected
-                    ? 'bg-blue-50 border border-blue-200'
-                    : 'hover:bg-gray-50 border border-transparent'
+                ref={setNodeRef}
+                className={`p-3 border-2 border-dashed rounded-lg text-center transition-colors ${
+                  isOver
+                    ? 'bg-red-100 border-red-400 text-red-700'
+                    : 'bg-gray-50 border-gray-300 hover:bg-red-50 hover:border-red-300'
                 }`}
               >
-                <div className='flex items-center justify-between'>
-                  <button
-                    className={`text-left flex-1 ${
-                      isSelected
-                        ? 'text-blue-900 font-medium'
-                        : 'hover:text-blue-600'
-                    } transition-colors`}
-                    onClick={() => {
-                      if (!isSelected) {
-                        // Add with default ascending direction
-                        addSortCriteria(sortField.field, sortField.label);
-                      }
-                    }}
-                    disabled={isSelected}
-                  >
-                    {sortField.label}
-                  </button>
-                  <div className='flex gap-1'>
-                    {/* ASC Pill */}
+                <div
+                  className={`flex items-center justify-center gap-2 ${
+                    isOver ? 'text-red-700' : 'text-gray-500 hover:text-red-500'
+                  }`}
+                >
+                  <Trash2 className='h-4 w-4' />
+                  <span className='text-sm'>
+                    {isOver ? 'Drop to remove' : 'Drag here to remove sort'}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className='text-gray-500 text-sm py-8 text-center border-2 border-dashed border-gray-200 rounded-lg'>
+              No sorts selected
+              <br />
+              <span className='text-xs'>Choose from available options →</span>
+            </div>
+          )}
+        </div>
+
+        {/* Vertical Divider */}
+        <div className='w-px bg-gray-200'></div>
+
+        {/* Right Column: Available Options */}
+        <div className='flex-1'>
+          <h4 className='text-sm font-medium text-gray-700 mb-2'>
+            Available Sort Options
+          </h4>
+          <div className='space-y-1'>
+            {sortFields.map((sortField) => {
+              const selectedCriteria = sortCriteria.find(
+                (criteria) => criteria.field === sortField.field
+              );
+              const isSelected = !!selectedCriteria;
+
+              return (
+                <div
+                  key={sortField.field}
+                  className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
+                    isSelected
+                      ? 'bg-blue-50 border border-blue-200'
+                      : 'hover:bg-gray-50 border border-transparent'
+                  }`}
+                >
+                  <div className='flex items-center justify-between'>
                     <button
-                      className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 transition-colors cursor-pointer hover:opacity-80 ${
-                        isSelected && selectedCriteria?.direction === 'asc'
-                          ? 'bg-blue-200 text-blue-800 border border-blue-300'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (
-                          isSelected &&
-                          selectedCriteria?.direction === 'asc'
-                        ) {
-                          // If already selected with asc, remove it
-                          removeSortCriteria(selectedCriteria.id);
-                        } else if (
-                          isSelected &&
-                          selectedCriteria?.direction === 'desc'
-                        ) {
-                          // If selected with desc, toggle to asc
-                          toggleDirection(selectedCriteria.id);
-                        } else {
-                          // If not selected, add with asc direction
+                      className={`text-left flex-1 ${
+                        isSelected
+                          ? 'text-blue-900 font-medium'
+                          : 'hover:text-blue-600'
+                      } transition-colors`}
+                      onClick={() => {
+                        if (!isSelected) {
+                          // Add with default ascending direction
                           addSortCriteria(sortField.field, sortField.label);
                         }
                       }}
+                      disabled={isSelected}
                     >
-                      {sortField.ascLabel}
-                      <ChevronUp className='h-3 w-3' />
+                      {sortField.label}
                     </button>
-                    {/* DESC Pill */}
-                    <button
-                      className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 transition-colors cursor-pointer hover:opacity-80 ${
-                        isSelected && selectedCriteria?.direction === 'desc'
-                          ? 'bg-blue-200 text-blue-800 border border-blue-300'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (
-                          isSelected &&
-                          selectedCriteria?.direction === 'desc'
-                        ) {
-                          // If already selected with desc, remove it
-                          removeSortCriteria(selectedCriteria.id);
-                        } else if (
-                          isSelected &&
-                          selectedCriteria?.direction === 'asc'
-                        ) {
-                          // If selected with asc, toggle to desc
-                          toggleDirection(selectedCriteria.id);
-                        } else {
-                          // If not selected, add with desc direction
-                          const newCriteria: SortCriteria = {
-                            id: `${sortField.field}-${Date.now()}`,
-                            field: sortField.field,
-                            direction: 'desc',
-                            label: `${sortField.label} (${sortField.descLabel})`,
-                          };
-                          setSortCriteria((prev) => [...prev, newCriteria]);
-                        }
-                      }}
-                    >
-                      {sortField.descLabel}
-                      <ChevronDown className='h-3 w-3' />
-                    </button>
+                    <div className='flex gap-1'>
+                      {/* ASC Pill */}
+                      <button
+                        className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 transition-colors cursor-pointer hover:opacity-80 ${
+                          isSelected && selectedCriteria?.direction === 'asc'
+                            ? 'bg-blue-200 text-blue-800 border border-blue-300'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (
+                            isSelected &&
+                            selectedCriteria?.direction === 'asc'
+                          ) {
+                            // If already selected with asc, remove it
+                            removeSortCriteria(selectedCriteria.id);
+                          } else if (
+                            isSelected &&
+                            selectedCriteria?.direction === 'desc'
+                          ) {
+                            // If selected with desc, toggle to asc
+                            toggleDirection(selectedCriteria.id);
+                          } else {
+                            // If not selected, add with asc direction
+                            addSortCriteria(sortField.field, sortField.label);
+                          }
+                        }}
+                      >
+                        {sortField.ascLabel}
+                        <ChevronUp className='h-3 w-3' />
+                      </button>
+                      {/* DESC Pill */}
+                      <button
+                        className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 transition-colors cursor-pointer hover:opacity-80 ${
+                          isSelected && selectedCriteria?.direction === 'desc'
+                            ? 'bg-blue-200 text-blue-800 border border-blue-300'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (
+                            isSelected &&
+                            selectedCriteria?.direction === 'desc'
+                          ) {
+                            // If already selected with desc, remove it
+                            removeSortCriteria(selectedCriteria.id);
+                          } else if (
+                            isSelected &&
+                            selectedCriteria?.direction === 'asc'
+                          ) {
+                            // If selected with asc, toggle to desc
+                            toggleDirection(selectedCriteria.id);
+                          } else {
+                            // If not selected, add with desc direction
+                            const newCriteria: SortCriteria = {
+                              id: `${sortField.field}-${Date.now()}`,
+                              field: sortField.field,
+                              direction: 'desc',
+                              label: `${sortField.label} (${sortField.descLabel})`,
+                            };
+                            setSortCriteria((prev) => [...prev, newCriteria]);
+                          }
+                        }}
+                      >
+                        {sortField.descLabel}
+                        <ChevronDown className='h-3 w-3' />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
