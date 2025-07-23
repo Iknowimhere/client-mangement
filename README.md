@@ -31,6 +31,15 @@ npm run dev
 npm run build
 ```
 
+## 🎬 Demo Video
+
+Check out the complete video demonstration in the `demo/` folder to see all features in action:
+
+- Multi-criteria sorting with drag-and-drop priority management
+- Real-time table updates and smooth animations
+- Persistent preferences across browser sessions
+- Professional UI interactions and visual feedback
+
 ## 🛠️ Tech Stack
 
 - **React 19.1.0** with TypeScript for type-safe development
